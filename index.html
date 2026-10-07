@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f6f8">
+  <meta name="description" content="Format LinkedIn posts and articles, preview them, and copy text that keeps its styling when pasted into LinkedIn.">
+  <title>LinkedIn Text Studio</title>
+  <style>
+    :root{--ink:#17212b;--muted:#687581;--line:#dce2e7;--paper:#fff;--bg:#f3f6f8;--blue:#0a66c2;--blue-dark:#004182;--mint:#dff4ed;--shadow:0 14px 40px #17212b0d}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,select{font:inherit}button{cursor:pointer}
+    .topbar{height:66px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 max(24px,calc((100vw - 1240px)/2));position:sticky;top:0;z-index:5}
+    .brand{display:flex;align-items:center;gap:11px;font-weight:750;font-size:17px;letter-spacing:-.3px}.mark{width:32px;height:32px;border-radius:8px;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:800;font-size:18px}.topnote{font-size:12px;color:var(--muted)}
+    main{max-width:1240px;margin:34px auto;padding:0 24px}.intro{display:flex;justify-content:space-between;align-items:end;margin-bottom:24px;gap:20px}.eyebrow{color:var(--blue);text-transform:uppercase;font-size:11px;font-weight:800;letter-spacing:1.2px}.intro h1{font-size:clamp(27px,3vw,36px);letter-spacing:-1.3px;margin:5px 0 4px;line-height:1.12}.intro p{margin:0;color:var(--muted);max-width:690px}.save-note{color:var(--muted);font-size:12px;white-space:nowrap}
+    .layout{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(360px,.92fr);gap:22px;align-items:start}.panel{background:var(--paper);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);overflow:hidden}.panel-head{padding:17px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.panel-head h2{margin:0;font-size:15px;letter-spacing:-.2px}.sub{font-size:12px;color:var(--muted)}
+    .toolbar{padding:11px 13px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:7px;flex-wrap:wrap;background:#fbfcfd}.toolbtn,.toolselect{height:34px;border:1px solid transparent;background:transparent;border-radius:6px;color:#34414b;min-width:34px;padding:0 9px}.toolbtn{font-weight:700}.toolbtn:hover,.toolselect:hover{background:#eaf2f8}.toolbtn.active{background:#d9eaf8;color:var(--blue-dark)}.toolselect{border-color:var(--line);font-size:12px;background:#fff}.separator{height:22px;border-left:1px solid var(--line);margin:0 2px}
+    .editor{min-height:398px;padding:20px 21px;outline:none;font-size:15px;line-height:1.65;overflow:auto;white-space:normal}.editor:empty:before{content:attr(data-placeholder);color:#9aa5ae;pointer-events:none}.editor p{margin:0 0 11px}.editor ul,.editor ol{padding-left:25px;margin:0 0 12px}.editor li{padding-left:3px}.editor blockquote{border-left:3px solid var(--blue);margin:10px 0;padding:4px 0 4px 13px;color:#52616d}.editor a{color:var(--blue)}
+    .editor-foot{border-top:1px solid var(--line);padding:11px 17px;display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:12px}.count{display:flex;gap:17px}.count strong{color:#34414b;font-weight:650}.actions{display:flex;gap:8px}.btn{border:1px solid var(--line);border-radius:7px;background:#fff;padding:9px 13px;font-weight:650;color:#27343e;transition:.15s}.btn:hover{background:#f5f8fa}.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.btn.primary:hover{background:var(--blue-dark)}.btn.small{padding:7px 10px;font-size:12px}.btn:focus-visible,.toolbtn:focus-visible,.toolselect:focus-visible{outline:3px solid #92c7f5;outline-offset:2px}
+    .preview-wrap{padding:18px;background:#f3f6f8}.post-card{max-width:520px;margin:0 auto;background:#fff;border:1px solid #d7dce0;border-radius:8px;overflow:hidden}.post-meta{display:flex;gap:10px;align-items:center;padding:15px 15px 12px}.avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(140deg,#c9e8dc,#2f8872);display:grid;place-items:center;color:white;font-weight:800;font-size:18px}.who{line-height:1.25}.who strong{display:block;font-size:14px}.who span{font-size:12px;color:#687581}.post-body{padding:0 15px 16px;font-size:14px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere;min-height:244px}.post-body p{margin:0 0 10px}.post-body ul,.post-body ol{margin:0 0 10px;padding-left:23px}.post-body blockquote{border-left:3px solid var(--blue);margin:8px 0;padding-left:11px;color:#596873}.post-body a{color:#0a66c2}.post-body:empty:before{content:"Your formatted post will appear here…";color:#9aa5ae}.post-actions{border-top:1px solid #e7eaed;padding:10px 15px;color:#697781;font-size:12px;display:flex;justify-content:space-around}.preview-controls{display:flex;align-items:center;justify-content:space-between;padding:0 0 12px}.preview-controls strong{font-size:13px}.mode{display:flex;background:#e7ecef;border-radius:7px;padding:3px;gap:2px}.mode button{border:0;background:transparent;border-radius:5px;padding:5px 8px;font-size:11px;color:#55636e}.mode button.selected{background:#fff;color:#17212b;box-shadow:0 1px 3px #10182016}.preview-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:13px}.hint{font-size:11px;color:var(--muted);max-width:240px}.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,18px);background:#17212b;color:#fff;padding:11px 16px;border-radius:8px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;box-shadow:0 6px 24px #0002}.toast.show{opacity:1;transform:translate(-50%,0)}.footer{max-width:1240px;margin:20px auto 32px;padding:0 24px;color:#77828b;font-size:11px;display:flex;justify-content:space-between;gap:20px}.footer a{color:#53616c}
+    @media(max-width:850px){main{margin-top:24px}.layout{grid-template-columns:1fr}.preview-panel{order:2}.editor-panel{order:1}.intro{align-items:start;flex-direction:column;gap:8px}.save-note{white-space:normal}.editor{min-height:310px}}
+    @media(max-width:520px){.topbar{padding:0 16px}.topnote{display:none}main{padding:0 13px}.footer{padding:0 13px;flex-direction:column}.intro h1{font-size:29px}.panel-head{padding:14px 15px}.toolbar{gap:4px;padding:9px}.toolbtn{min-width:31px;padding:0 7px}.editor{padding:16px;min-height:300px}.preview-wrap{padding:12px}.count{gap:10px}.editor-foot{padding:10px 12px}.actions .btn{padding:8px 9px;font-size:12px}}
+  </style>
+</head>
+<body>
+  <header class="topbar"><div class="brand"><span class="mark">in</span><span>LinkedIn Text Studio</span></div><div class="topnote">A simple formatter for posts and articles</div></header>
+  <main>
+    <section class="intro"><div><div class="eyebrow">Write · Format · Preview · Copy</div><h1>Make your LinkedIn text look the way you wrote it.</h1><p>Format your post, check the preview, then copy it with styling that survives LinkedIn’s paste box.</p></div><div class="save-note">Your draft stays in this browser and saves automatically.</div></section>
+    <div class="layout">
+      <section class="panel editor-panel" aria-labelledby="editor-title"><div class="panel-head"><div><h2 id="editor-title">Compose your post</h2><div class="sub">Select text to apply bold, italic, or other styles</div></div><button class="btn small" id="clearBtn" type="button">Clear</button></div>
+        <div class="toolbar" role="toolbar" aria-label="Text formatting">
+          <button class="toolbtn" type="button" data-command="bold" aria-label="Bold" title="Bold (Ctrl+B)"><b>B</b></button><button class="toolbtn" type="button" data-command="italic" aria-label="Italic" title="Italic (Ctrl+I)"><i>I</i></button><button class="toolbtn" type="button" data-command="underline" aria-label="Underline" title="Underline"><u>U</u></button><button class="toolbtn" type="button" data-command="strikeThrough" aria-label="Strikethrough" title="Strikethrough"><s>S</s></button>
+          <span class="separator"></span>
+          <select class="toolselect" id="fontStyle" aria-label="Unicode font style"><option value="">Font style</option><option value="sansBold">Sans bold</option><option value="sansItalic">Sans italic</option><option value="sansBoldItalic">Bold italic</option><option value="script">Script</option><option value="double">Double-struck</option><option value="monospace">Monospace</option></select>
+          <span class="separator"></span>
+          <button class="toolbtn" type="button" data-command="insertUnorderedList" aria-label="Bulleted list" title="Bulleted list">• List</button><button class="toolbtn" type="button" data-command="insertOrderedList" aria-label="Numbered list" title="Numbered list">1. List</button><button class="toolbtn" type="button" data-command="formatBlock" data-value="blockquote" aria-label="Quote" title="Quote">❝</button>
+          <span class="separator"></span><button class="toolbtn" type="button" id="linkBtn" aria-label="Insert link" title="Insert link">↗ Link</button><button class="toolbtn" type="button" id="undoBtn" aria-label="Undo" title="Undo">↶</button>
+        </div>
+        <div id="editor" class="editor" contenteditable="true" role="textbox" aria-label="Post text editor" aria-multiline="true" data-placeholder="Start writing or paste your draft here…"><p></p></div>
+        <div class="editor-foot"><div class="count"><span><strong id="charCount">0</strong> characters</span><span><strong id="wordCount">0</strong> words</span></div><div class="actions"><button class="btn" type="button" id="copyPlain">Copy plain text</button><button class="btn primary" type="button" id="copyFormatted">Copy formatted</button></div></div>
+      </section>
+      <section class="panel preview-panel" aria-labelledby="preview-title"><div class="panel-head"><div><h2 id="preview-title">Preview</h2><div class="sub">A LinkedIn feed-style preview</div></div><span class="sub">Updates as you type</span></div>
+        <div class="preview-wrap"><div class="preview-controls"><strong>Post preview</strong><div class="mode" aria-label="Preview mode"><button type="button" class="selected" data-mode="feed">Feed</button><button type="button" data-mode="article">Article</button></div></div>
+          <article class="post-card"><div class="post-meta"><div class="avatar">JL</div><div class="who"><strong>Your name</strong><span>Frontline technology · 1 min</span></div></div><div class="post-body" id="previewBody"></div><div class="post-actions"><span>👍 Like</span><span>◯ Comment</span><span>↗ Repost</span><span>➤ Send</span></div></article>
+          <div class="preview-bottom"><span class="hint">Unicode styles stay visible after pasting. Preview is a close approximation of LinkedIn’s feed.</span><button class="btn small" id="copyPreview" type="button">Copy preview text</button></div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="footer"><span>Unicode formatting works in LinkedIn posts and many profile fields. Keep accessibility in mind when styling whole paragraphs.</span><span>Drafts are stored locally on this device.</span></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>
+    (()=>{
+      const editor=document.getElementById('editor'), preview=document.getElementById('previewBody'), toast=document.getElementById('toast');
+      let savedRange=null, previewMode='feed', toastTimer;
+      const unicodeMaps={
+        sansBold:[0x1D5D4,0x1D5EE,0x1D608], sansItalic:[0x1D608,0x1D622,0x1D63C],
+        sansBoldItalic:[0x1D63C,0x1D656,0x1D670], double:[0x1D538,0x1D552,0x1D56C], monospace:[0x1D670,0x1D68A,0x1D6A4],
+        script:[0x1D4D0,0x1D4EA,0x1D504]
+      };
+      function mapChar(ch,style){
+        const cp=ch.codePointAt(0), m=unicodeMaps[style]; if(!m)return ch;
+        let base, offset;
+        if(cp>=65&&cp<=90){base=65;offset=m[0]}else if(cp>=97&&cp<=122){base=97;offset=m[1]}else if(cp>=48&&cp<=57){base=48;offset=m[2]}else return ch;
+        // Unicode has a few legacy letterforms outside contiguous mathematical ranges.
+        const exceptions={sansBold:{65:0x1D5D4,97:0x1D5EE,48:0x1D7EC},sansItalic:{65:0x1D608,97:0x1D622},sansBoldItalic:{65:0x1D63C,97:0x1D656,48:0x1D7EC},double:{65:0x1D538,97:0x1D552},monospace:{65:0x1D670,97:0x1D68A,48:0x1D7F6},script:{65:0x1D49C,97:0x1D4B6}};
+        const special=exceptions[style]?.[base]; if(special)offset=special;
+        if(style==='double'&&ch==='C')return 'ℂ';if(style==='double'&&ch==='H')return 'ℍ';if(style==='double'&&ch==='N')return 'ℕ';if(style==='double'&&ch==='P')return 'ℙ';if(style==='double'&&ch==='Q')return 'ℚ';if(style==='double'&&ch==='R')return 'ℝ';if(style==='double'&&ch==='Z')return 'ℤ';
+        if(style==='script'&&ch==='B')return 'ℬ';if(style==='script'&&ch==='E')return 'ℰ';if(style==='script'&&ch==='F')return 'ℱ';if(style==='script'&&ch==='H')return 'ℋ';if(style==='script'&&ch==='I')return 'ℐ';if(style==='script'&&ch==='L')return 'ℒ';if(style==='script'&&ch==='M')return 'ℳ';if(style==='script'&&ch==='R')return 'ℛ';
+        if(style==='script'&&/[0-9]/.test(ch))return ch;
+        return String.fromCodePoint(offset+(cp-base));
+      }
+      function transform(text,style){return Array.from(text,c=>mapChar(c,style)).join('')}
+      function saveSelection(){const s=getSelection();if(s&&s.rangeCount&&editor.contains(s.anchorNode)){savedRange=s.getRangeAt(0).cloneRange()}}
+      editor.addEventListener('keyup',saveSelection);editor.addEventListener('mouseup',saveSelection);editor.addEventListener('input',()=>{saveSelection();update();try{localStorage.setItem('linkedin-text-studio-draft',editor.innerHTML)}catch(e){}});
+      function cleanText(){return editor.innerText.replace(/\u00a0/g,' ')}
+      function update(){
+        preview.innerHTML=editor.innerHTML;
+        if(previewMode==='article'){preview.style.fontFamily='Georgia,serif';preview.style.fontSize='15px';preview.style.lineHeight='1.8';preview.style.padding='22px 20px';preview.style.minHeight='300px'}else{preview.style.fontFamily='';preview.style.fontSize='';preview.style.lineHeight='';preview.style.padding='';preview.style.minHeight=''}
+        const text=cleanText();document.getElementById('charCount').textContent=Array.from(text).length;document.getElementById('wordCount').textContent=(text.trim().match(/\S+/g)||[]).length;
+      }
+      function restore(){if(savedRange){const s=getSelection();s.removeAllRanges();s.addRange(savedRange)}}
+      document.querySelectorAll('[data-command]').forEach(btn=>btn.addEventListener('mousedown',e=>e.preventDefault()));
+      document.querySelectorAll('[data-command]').forEach(btn=>btn.addEventListener('click',()=>{editor.focus();restore();const c=btn.dataset.command;if(c==='formatBlock')document.execCommand(c,false,btn.dataset.value);else document.execCommand(c,false,null);saveSelection();update()}));
+      document.getElementById('fontStyle').addEventListener('change',e=>{const style=e.target.value;if(!style)return;editor.focus();restore();const s=getSelection();if(!s||!s.rangeCount||s.isCollapsed){say('Select some text first');e.target.value='';return}const range=s.getRangeAt(0),span=document.createElement('span');span.textContent=transform(range.toString(),style);range.deleteContents();range.insertNode(span);s.removeAllRanges();const r=document.createRange();r.selectNodeContents(span);s.addRange(r);saveSelection();update();e.target.value=''});
+      document.getElementById('linkBtn').addEventListener('click',()=>{editor.focus();restore();let url=prompt('Enter the link URL (include https://):');if(!url)return;if(!/^https?:\/\//i.test(url))url='https://'+url;document.execCommand('createLink',false,url);update()});
+      document.getElementById('undoBtn').addEventListener('click',()=>{editor.focus();document.execCommand('undo');update()});
+      document.getElementById('clearBtn').addEventListener('click',()=>{if(!cleanText().trim())return;editor.innerHTML='<p><br></p>';update();localStorage.removeItem('linkedin-text-studio-draft');editor.focus()});
+      document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('selected',x===b));previewMode=b.dataset.mode;update()}));
+      function say(msg){toast.textContent=msg;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2200)}
+      async function copy(html){const plain=cleanText();try{if(navigator.clipboard&&window.ClipboardItem){await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([plain],{type:'text/plain'})})])}else{const temp=document.createElement('div');temp.contentEditable='true';temp.innerHTML=html;document.body.appendChild(temp);const range=document.createRange();range.selectNodeContents(temp);const s=getSelection();s.removeAllRanges();s.addRange(range);document.execCommand('copy');s.removeAllRanges();temp.remove()}say('Formatted text copied. Paste it into LinkedIn.')}catch(e){say('Copy was blocked by your browser. Select the preview and copy manually.')}}
+      document.getElementById('copyFormatted').addEventListener('click',()=>copy(editor.innerHTML));document.getElementById('copyPreview').addEventListener('click',()=>copy(editor.innerHTML));document.getElementById('copyPlain').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(cleanText());say('Plain text copied')}catch(e){say('Clipboard access is unavailable')}});
+      document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&!e.shiftKey){if(e.key.toLowerCase()==='b'){e.preventDefault();document.execCommand('bold')}if(e.key.toLowerCase()==='i'){e.preventDefault();document.execCommand('italic')}}});
+      try{const draft=localStorage.getItem('linkedin-text-studio-draft');if(draft)editor.innerHTML=draft}catch(e){}update();
+    })();
+  </script>
+</body>
+</html>
